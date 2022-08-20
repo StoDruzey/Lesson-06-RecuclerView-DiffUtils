@@ -19,7 +19,10 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater, null, false)
         setContentView(binding.root)
 
-        val items = mutableListOf<String>()
+//        val items = mutableListOf<String>()
+        val items = List(7) {
+            "Item $it"
+        }
 
         val adapter = ItemAdapter { item ->
             Toast.makeText(this, item, Toast.LENGTH_SHORT).show()
@@ -28,9 +31,9 @@ class MainActivity : AppCompatActivity() {
         with(binding) {
 
             button.setOnClickListener {
-                items.add("Item ${items.size}")
-                adapter.setNewList(items)
-                adapter.notifyDataSetChanged()
+//                items.add("Item ${items.size}")
+                adapter.submitList(items.shuffled())
+//                adapter.notifyDataSetChanged()
             }
             recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
             recyclerView.adapter = adapter
@@ -38,26 +41,26 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-class ItemDiffCallback(
-    private val oldItems: List<String>,
-    private val newItems: List<String>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int {
-        return oldItems.size
-    }
-
-    override fun getNewListSize(): Int {
-        return newItems.size
-    }
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldItems[oldItemPosition] == newItems[newItemPosition]
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldItems[oldItemPosition] == newItems[newItemPosition]
-    }
-}
+//class ItemDiffCallback(
+//    private val oldItems: List<String>,
+//    private val newItems: List<String>
+//) : DiffUtil.Callback() {
+//    override fun getOldListSize(): Int {
+//        return oldItems.size
+//    }
+//
+//    override fun getNewListSize(): Int {
+//        return newItems.size
+//    }
+//
+//    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//        return oldItems[oldItemPosition] == newItems[newItemPosition]
+//    }
+//
+//    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//        return oldItems[oldItemPosition] == newItems[newItemPosition]
+//    }
+//}
 
 class ItemViewHolder(
     private val binding: ItemBinding,
@@ -75,7 +78,7 @@ class ItemAdapter(
     private val onItemClicked: (String) -> Unit
 ) : ListAdapter<String, ItemViewHolder>(DIFF_CALLBACK) {
 
-    private val list = mutableListOf<String>()
+//    private val list = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val context = parent.context
@@ -85,19 +88,19 @@ class ItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val item = list[position]
+        val item = getItem(position)
         holder.bind(item)
     }
 
-    override fun getItemCount(): Int = list.size
+//    override fun getItemCount(): Int = list.size
 
-    fun setNewList(newList: List<String>) {
-
-        val callback = ItemDiffCallback(list.toList(), newList)
-        list.clear()
-        list.addAll(newList)
-        DiffUtil.calculateDiff(callback).dispatchUpdatesTo(this)
-    }
+//    fun setNewList(newList: List<String>) {
+//
+//        val callback = ItemDiffCallback(list.toList(), newList)
+//        list.clear()
+//        list.addAll(newList)
+//        DiffUtil.calculateDiff(callback).dispatchUpdatesTo(this)
+//    }
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<String>() {
